@@ -1,4 +1,4 @@
-import { $, clearInput } from '../utils/dom.js';
+import { $, clearInputValue, disableElements } from '../utils/dom.js';
 import { LOTTO_PRICE } from '../utils/constants.js';
 import { mod, divide } from '../utils/lotto.js';
 import { ERROR_MESSAGE, GUIDE_MESSAGE } from '../utils/message.js';
@@ -17,9 +17,10 @@ export default class LottoPerchaseInput {
   }
 
   bindEvent() {
-    this.$perchaseButton.addEventListener('click', () => {
-      this.perchaseButtonClickHandler();
-    });
+    this.$perchaseButton.addEventListener(
+      'click',
+      this.handlePerchaseLottos.bind(this),
+    );
 
     this.$perchaseInput.addEventListener('keydown', e => {
       if (e.key !== 'Enter') {
@@ -27,11 +28,11 @@ export default class LottoPerchaseInput {
       }
 
       e.preventDefault();
-      this.perchaseButtonClickHandler();
+      this.handlePerchaseLottos();
     });
   }
 
-  perchaseButtonClickHandler() {
+  handlePerchaseLottos() {
     const { createLottos } = this.props;
     const perchaseInputValue = this.$perchaseInput.value.trim();
     const payment = Number(perchaseInputValue);
@@ -39,7 +40,7 @@ export default class LottoPerchaseInput {
     const errorMessage = validatePerchaseInputValue(payment);
     if (errorMessage) {
       alert(errorMessage);
-      clearInput(this.$perchaseInput);
+      clearInputValue(this.$perchaseInput);
       return;
     }
 
@@ -48,6 +49,7 @@ export default class LottoPerchaseInput {
     alert(GUIDE_MESSAGE.PAYMENT_RESULT_MESSAGE(lottoCount, remainingMoney));
 
     createLottos(lottoCount);
+    disableElements(this.$perchaseInput, this.$perchaseButton);
   }
 }
 

@@ -24,3 +24,18 @@ export const generateLottoNumbers = () => {
 
 export const isValidLottoNumbers = numbers =>
   numbers.length === LOTTO_LENGTH && new Set(numbers).size === numbers.length;
+
+export const decideWinners = (lotto, winningNumbers) => {
+  let count = 0;
+  lotto.numbers.forEach(number => {
+    if (winningNumbers.numbers.includes(number)) count++;
+  });
+  if (count === 6) {
+    return 1;
+  } else if (count === 5) {
+    if (lotto.numbers.includes(winningNumbers.bonusNumber)) return 2;
+    return 3;
+  } else if (count === 4) return 4;
+  else if (count === 3) return 5;
+  return 6;
+};
