@@ -1,6 +1,7 @@
 import { lottoManager } from './App.js';
 import {
   $,
+  makeElement,
   clearInputValue,
   disableElements,
   enableElements,
@@ -10,26 +11,35 @@ import { mod, divide, isEmptyArray } from '../utils/common.js';
 import { ERROR_MESSAGE, GUIDE_MESSAGE } from '../utils/message.js';
 
 export default class LottoPurchaseInput {
-  constructor() {
-    this.subscribeAction();
+  constructor(props) {
+    this.props = props;
+
+    this.initDOM();
     this.selectDOM();
     this.bindEvent();
+    this.subscribeAction();
   }
 
-  subscribeAction() {
-    lottoManager.subscribe(this.reset.bind(this));
+  initDOM() {
+    const { $parent } = this.props;
+
+    const $target = makeElement('form', {
+      className: 'lotto-purchase-input mt-5',
+    });
+    $target.innerHTML = LottoPurchaseInputHTML;
+
+    this.$target = $target;
+    $parent.append(this.$target);
   }
 
   selectDOM() {
-    this.$target = $('#lotto-purchase-input-container');
-    this.$purchaseInput = $('#lotto-purchase-input');
-    this.$purchaseButton = $('#lotto-purchase-btn');
+    this.$purchaseInput = $('.lotto-purchase-input__input', this.$target);
+    this.$purchaseButton = $('.lotto-purchase-input__btn', this.$target);
   }
 
   bindEvent() {
     this.$target.addEventListener('submit', e => {
       e.preventDefault();
-
       this.onPurchaseLotto();
     });
   }
@@ -59,6 +69,10 @@ export default class LottoPurchaseInput {
       enableElements(this.$purchaseInput, this.$purchaseButton);
     }
   }
+
+  subscribeAction() {
+    lottoManager.subscribe(this.reset.bind(this));
+  }
 }
 
 const validatePurchaseInputValue = payment => {
@@ -66,3 +80,17 @@ const validatePurchaseInputValue = payment => {
     return ERROR_MESSAGE.PAYMENT_AMOUNT;
   }
 };
+
+const LottoPurchaseInputHTML = `
+<label class="mb-2 d-inline-block">구입할 금액을 입력해주세요.</label>
+<div class="d-flex">
+  <input
+    type="number"
+    class="lotto-purchase-input__input w-100 mr-2 pl-2"
+    placeholder="구입 금액"
+    autofocus
+    required
+    />
+  <button type="submit" class="lotto-purchase-input__btn btn btn-cyan">확인</button>
+</div>
+`;

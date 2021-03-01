@@ -9,32 +9,6 @@ describe('LOTTO - 당첨번호 입력 및 상금확인 테스트', () => {
     cy.visit('http://localhost:5500/');
   });
 
-  it('당첨 번호 각각이 1~45 범위를 벗어나게 입력한 경우, alert에 오류 메시지를 출력한다.', () => {
-    const winningNumbers = [1, 2, 3, 4, 5, 100];
-    const bonusNumber = 40;
-
-    const alertStub = cy.stub();
-    cy.on('window:alert', alertStub);
-
-    cy.get('#lotto-purchase-input').type('4500');
-    cy.get('#lotto-purchase-btn').click();
-    cy.get('.winning-number')
-      .each((elem, index) => {
-        cy.wrap(elem).type(winningNumbers[index]);
-      })
-      .then(() => {
-        cy.get('.bonus-number').type(bonusNumber);
-      });
-
-    cy.get('.open-result-modal-button')
-      .click()
-      .then(() => {
-        expect(alertStub.getCall(1)).to.be.calledWith(
-          ERROR_MESSAGE.OUT_OF_RANGE,
-        );
-      });
-  });
-
   it('중복된 숫자를 당첨 번호로 입력한 경우, alert에 오류 메시지를 출력한다.', () => {
     const winningNumbers = [1, 1, 3, 4, 5, 6];
     const bonusNumber = 45;
@@ -42,8 +16,8 @@ describe('LOTTO - 당첨번호 입력 및 상금확인 테스트', () => {
     const alertStub = cy.stub();
     cy.on('window:alert', alertStub);
 
-    cy.get('#lotto-purchase-input').type('4500');
-    cy.get('#lotto-purchase-btn').click();
+    cy.get('.lotto-purchase-input__input').type('4500');
+    cy.get('.lotto-purchase-input__btn').click({ force: true });
 
     cy.get('.winning-number')
       .each((elem, index) => {
@@ -53,7 +27,7 @@ describe('LOTTO - 당첨번호 입력 및 상금확인 테스트', () => {
         cy.get('.bonus-number').type(bonusNumber);
       });
 
-    cy.get('.open-result-modal-button')
+    cy.get('.winning-number-input__result-btn')
       .click()
       .then(() => {
         expect(alertStub.getCall(1)).to.be.calledWith(
@@ -62,32 +36,11 @@ describe('LOTTO - 당첨번호 입력 및 상금확인 테스트', () => {
       });
   });
 
-  it('7개의 번호 중 하나라도 입력하지 않은 경우, alert에 오류 메시지를 출력한다.', () => {
-    const winningNumbers = [1, 1, 3, 4, 5, 6];
-
-    const alertStub = cy.stub();
-    cy.on('window:alert', alertStub);
-
-    cy.get('#lotto-purchase-input').type('4500');
-    cy.get('#lotto-purchase-btn').click();
-    cy.get('.winning-number').each((elem, index) => {
-      cy.wrap(elem).type(winningNumbers[index]);
-    });
-
-    cy.get('.open-result-modal-button')
-      .click()
-      .then(() => {
-        expect(alertStub.getCall(1)).to.be.calledWith(
-          ERROR_MESSAGE.EMPTY_INPUT_NUMBER,
-        );
-      });
-  });
-
   it('로또 구매를 완료할 경우, 당첨 번호 입력 UI를 화면에 출력한다.', () => {
-    cy.get('#lotto-purchase-input').type('4500');
-    cy.get('#lotto-purchase-btn').click();
+    cy.get('.lotto-purchase-input__input').type('4500');
+    cy.get('.lotto-purchase-input__btn').click();
 
-    cy.get('#lotto-winning-number-input-container').should('be.visible');
+    cy.get('.winning-number-input').should('be.visible');
   });
 
   it('로또와 당첨 번호가 주어질 때, 당첨 통계/수익률을 계산한다.', () => {

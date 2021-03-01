@@ -11,8 +11,8 @@ describe('LOTTO - 구매할 금액 입력 테스트', () => {
     const alertStub = cy.stub();
     cy.on('window:alert', alertStub);
 
-    cy.get('#lotto-purchase-input').type('1500');
-    cy.get('#lotto-purchase-btn')
+    cy.get('.lotto-purchase-input__input').type('1500');
+    cy.get('.lotto-purchase-input__btn')
       .click()
       .then(() => {
         expect(alertStub.getCall(0)).to.be.calledWith(
@@ -25,8 +25,8 @@ describe('LOTTO - 구매할 금액 입력 테스트', () => {
     const alertStub = cy.stub();
     cy.on('window:alert', alertStub);
 
-    cy.get('#lotto-purchase-input').type('100');
-    cy.get('#lotto-purchase-btn')
+    cy.get('.lotto-purchase-input__input').type('100');
+    cy.get('.lotto-purchase-input__btn')
       .click()
       .then(() => {
         expect(alertStub.getCall(0)).to.be.calledWith(
