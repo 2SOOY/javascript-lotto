@@ -1,5 +1,20 @@
-export const $ = selector => document.querySelector(selector);
-export const $$ = selector => Array.from(document.querySelectorAll(selector));
+export const $ = (selector, $parent = document) => {
+  return $parent.querySelector(selector);
+};
+
+export const $$ = (selector, $parent = document) => {
+  return Array.from($parent.querySelectorAll(selector));
+};
+
+export const makeElement = (type, attributes) => {
+  const $el = document.createElement(type);
+
+  Object.keys(attributes).forEach(attr => {
+    $el[attr] = attributes[attr];
+  });
+
+  return $el;
+};
 
 export const clearInputValue = $input => {
   $input.value = '';
